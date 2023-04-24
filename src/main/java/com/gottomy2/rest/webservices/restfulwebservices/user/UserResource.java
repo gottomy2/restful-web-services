@@ -1,5 +1,6 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,5 +41,16 @@ public class UserResource {
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usr.getId()).toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Object> deleteUser(@PathVariable Integer id) {
+        var deleted = service.deleteById(id);
+        if(!deleted){
+            return ResponseEntity.noContent().build();
+        }
+        else{
+            return ResponseEntity.ok("Entity deleted");
+        }
     }
 }
