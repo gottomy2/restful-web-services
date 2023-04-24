@@ -1,7 +1,10 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -21,11 +24,21 @@ public class UserResource {
 
     @GetMapping("/users/{id}")
     public User getUser(@PathVariable Integer id) {
-        return service.findOne(id);
+        User usr = service.findOne(id);
+
+        if(usr==null){
+            throw new UserNotFoundException("id:" + id);
+        }
+
+        return usr;
     }
 
+    //Returns response with status code 201 - created with location of the new user
     @PostMapping("/users")
-    public void createUser(@RequestBody User user) {
-        service.save(user);
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User usr = service.save(user);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usr.getId()).toUri();
+        return ResponseEntity.created(location).build();
     }
 }
