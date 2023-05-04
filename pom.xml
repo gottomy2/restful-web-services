@@ -47,12 +47,19 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.0.0</version>
-		</dependency>
+<!--		&lt;!&ndash;	Allows to auto generate documentation for REST-API	&ndash;&gt;-->
+<!--		&lt;!&ndash;	Accessible through /swagger-ui/index.html	&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.springdoc</groupId>-->
+<!--			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>-->
+<!--			<version>2.0.0</version>-->
+<!--		</dependency>-->
 
+<!--		&lt;!&ndash;	Adds dataformat XML for our API	&ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.dataformat</groupId>-->
+<!--			<artifactId>jackson-dataformat-xml</artifactId>-->
+<!--		</dependency>-->
 	</dependencies>
 
 	<build>
