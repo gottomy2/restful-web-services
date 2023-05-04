@@ -1,6 +1,10 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import jakarta.validation.Valid;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,14 +28,20 @@ public class UserResource {
     }
 
     @GetMapping("/users/{id}")
-    public User getUser(@PathVariable Integer id) {
+    public EntityModel<User> getUser(@PathVariable Integer id) {
         User usr = service.findOne(id);
 
         if (usr == null) {
             throw new UserNotFoundException("id:" + id);
         }
 
-        return usr;
+        //Adding HATEOAS for REST API:
+        EntityModel<User> entityModel = EntityModel.of(usr);
+        WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).getAllUsers());
+
+        entityModel.add(linkBuilder.withRel("all-users"));
+
+        return entityModel;
     }
 
     //Returns response with status code 201 - created with location of the new user

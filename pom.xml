@@ -47,6 +47,7 @@
 			<scope>test</scope>
 		</dependency>
 
+
 <!--		&lt;!&ndash;	Allows to auto generate documentation for REST-API	&ndash;&gt;-->
 <!--		&lt;!&ndash;	Accessible through /swagger-ui/index.html	&ndash;&gt;-->
 <!--		<dependency>-->
@@ -60,6 +61,12 @@
 <!--			<groupId>com.fasterxml.jackson.dataformat</groupId>-->
 <!--			<artifactId>jackson-dataformat-xml</artifactId>-->
 <!--		</dependency>-->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
