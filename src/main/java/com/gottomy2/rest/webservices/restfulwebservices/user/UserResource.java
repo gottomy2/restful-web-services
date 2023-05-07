@@ -38,7 +38,6 @@ public class UserResource {
         //Adding HATEOAS for REST API:
         EntityModel<User> entityModel = EntityModel.of(usr);
         WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).getAllUsers());
-
         entityModel.add(linkBuilder.withRel("all-users"));
 
         return entityModel;
