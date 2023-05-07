@@ -1,13 +1,13 @@
 package com.gottomy2.rest.webservices.restfulwebservices.filtering;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 //@JsonIgnoreProperties({"field1", "field2"}) //Static Filtering example: ignores fields field1 and field2 when returning JSON in REST-API calls
+@JsonFilter("SomeBeanFilter") // Allows for dynamic filteriing based on filter named "SomeBeanFilter"
 class SomeBean {
 
     private String field1;
-    @JsonIgnore // Ignores field2 while returning JSON in REST-API calls
+    //    @JsonIgnore // Ignores field2 while returning JSON in REST-API calls
     private String field2;
     private String field3;
 
