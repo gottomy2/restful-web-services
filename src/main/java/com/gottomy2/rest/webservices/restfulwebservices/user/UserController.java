@@ -1,5 +1,6 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
+import com.gottomy2.rest.webservices.restfulwebservices.post.PostRepository;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -15,23 +16,26 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-public class UserResource {
+public class UserController {
 
-    private UserRepository repository;
+    private UserRepository userRepository;
+
+    private PostRepository postRepository;
 
     //Autowiring UseRepository through a constructor:
-    public UserResource(UserRepository repository) {
-        this.repository = repository;
+    public UserController(UserRepository userRepository, PostRepository postRepository) {
+        this.userRepository = userRepository;
+        this.postRepository = postRepository;
     }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return repository.findAll();
+        return userRepository.findAll();
     }
 
     @GetMapping("/users/{id}")
     public EntityModel<User> getUser(@PathVariable Integer id) {
-        Optional<User> usr = repository.findById(id);
+        Optional<User> usr = userRepository.findById(id);
 
         if (usr.isEmpty()) {
             throw new UserNotFoundException("id:" + id);
@@ -48,7 +52,7 @@ public class UserResource {
     //Returns response with status code 201 - created with location of the new user
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User usr = repository.save(user);
+        User usr = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usr.getId()).toUri();
         return ResponseEntity.created(location).build();
@@ -56,9 +60,9 @@ public class UserResource {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Integer id) {
-        Optional<User> user = repository.findById(id);
+        Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            return ResponseEntity.noContent().build();
+            throw new UserNotFoundException("id: " + id);
         }
 
         return ResponseEntity.ok("Entity deleted");
