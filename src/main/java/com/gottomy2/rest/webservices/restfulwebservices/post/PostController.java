@@ -3,22 +3,27 @@ package com.gottomy2.rest.webservices.restfulwebservices.post;
 import com.gottomy2.rest.webservices.restfulwebservices.user.User;
 import com.gottomy2.rest.webservices.restfulwebservices.user.UserNotFoundException;
 import com.gottomy2.rest.webservices.restfulwebservices.user.UserRepository;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 @RestController
 class PostController {
 
+    private MessageSource messageSource;
     private UserRepository userRepository;
 
     private PostRepository postRepository;
 
-    public PostController(UserRepository userRepository, PostRepository postRepository) {
+    public PostController(MessageSource messageSource, UserRepository userRepository, PostRepository postRepository) {
+        this.messageSource = messageSource;
         this.userRepository = userRepository;
         this.postRepository = postRepository;
     }
@@ -76,6 +81,7 @@ class PostController {
 
         postRepository.delete(foundPost.get());
 
-        return ResponseEntity.ok("Successfully deleted post for user: " + user.get().getName());
+        Locale locale = LocaleContextHolder.getLocale();
+        return ResponseEntity.ok(messageSource.getMessage("deleted.post.message",null,"Successfully deleted post for user: ", locale).toString() + user.get().getName());
     }
 }
