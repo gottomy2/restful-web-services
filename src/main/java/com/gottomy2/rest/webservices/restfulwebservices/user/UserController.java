@@ -1,7 +1,8 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
-import com.gottomy2.rest.webservices.restfulwebservices.post.PostRepository;
 import jakarta.validation.Valid;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -18,14 +20,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 public class UserController {
 
+    private MessageSource messageSource;
     private UserRepository userRepository;
 
-    private PostRepository postRepository;
-
     //Autowiring UseRepository through a constructor:
-    public UserController(UserRepository userRepository, PostRepository postRepository) {
+    public UserController(UserRepository userRepository, MessageSource messageSource) {
         this.userRepository = userRepository;
-        this.postRepository = postRepository;
+        this.messageSource = messageSource;
     }
 
     @GetMapping("/users")
@@ -65,6 +66,7 @@ public class UserController {
             throw new UserNotFoundException("id: " + id);
         }
 
-        return ResponseEntity.ok("Entity deleted");
+        Locale locale = LocaleContextHolder.getLocale();
+        return ResponseEntity.ok(messageSource.getMessage("deleted.entity.message", null, "Successfully deleted user: ", locale).toString() + user.get().getName());
     }
 }

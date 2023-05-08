@@ -82,6 +82,6 @@ class PostController {
         postRepository.delete(foundPost.get());
 
         Locale locale = LocaleContextHolder.getLocale();
-        return ResponseEntity.ok(messageSource.getMessage("deleted.post.message",null,"Successfully deleted post for user: ", locale).toString() + user.get().getName());
+        return ResponseEntity.ok(messageSource.getMessage("deleted.entity.message",null,"Successfully deleted post for user: ", locale).toString() + user.get().getName());
     }
 }
