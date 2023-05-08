@@ -1,7 +1,5 @@
 package com.gottomy2.rest.webservices.restfulwebservices.user;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -11,32 +9,36 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserResource {
 
-    private UserDaoService service;
+    private UserRepository repository;
 
-    //Autowiring UserDaoService through a constructor:
-    public UserResource(UserDaoService service) {
-        this.service = service;
+    //Autowiring UseRepository through a constructor:
+    public UserResource(UserRepository repository) {
+        this.repository = repository;
     }
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return service.findAll();
+        return repository.findAll();
     }
 
     @GetMapping("/users/{id}")
     public EntityModel<User> getUser(@PathVariable Integer id) {
-        User usr = service.findOne(id);
+        Optional<User> usr = repository.findById(id);
 
-        if (usr == null) {
+        if (usr.isEmpty()) {
             throw new UserNotFoundException("id:" + id);
         }
 
         //Adding HATEOAS for REST API:
-        EntityModel<User> entityModel = EntityModel.of(usr);
+        EntityModel<User> entityModel = EntityModel.of(usr.get());
         WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).getAllUsers());
         entityModel.add(linkBuilder.withRel("all-users"));
 
@@ -46,7 +48,7 @@ public class UserResource {
     //Returns response with status code 201 - created with location of the new user
     @PostMapping("/users")
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        User usr = service.save(user);
+        User usr = repository.save(user);
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(usr.getId()).toUri();
         return ResponseEntity.created(location).build();
@@ -54,11 +56,11 @@ public class UserResource {
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Integer id) {
-        var deleted = service.deleteById(id);
-        if (!deleted) {
+        Optional<User> user = repository.findById(id);
+        if (user.isEmpty()) {
             return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok("Entity deleted");
         }
+
+        return ResponseEntity.ok("Entity deleted");
     }
 }
